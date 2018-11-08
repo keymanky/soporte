@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de tickets</title>
+
+    <meta charset="utf-8"></meta>
+
+    <!-- CSS de Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/my.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/icon.ico">    
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/my.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/icon.ico">    
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+
+    <script>
+
+        if(! window.localStorage.getItem("det_sop_usuario")){
+              window.location= "http://207.254.73.11:888/detexis/soporte/";
+        }
+
+        $(function() {
+
+            $( "#fi_datepicker" ).datepicker();
+            $( "#ff_datepicker" ).datepicker();
+
+            if(! window.localStorage.getItem("det_sop_fi")){
+
+                var date = new Date();
+                var dd = date.getDate();             
+                var mm = date.getMonth() + 1;
+                var yyyy = date.getFullYear();
+
+                var ToDate = mm + '/' + dd + '/' + yyyy;
+                var FromDate = mm + '/01/' + yyyy;
+
+                $('#ff_datepicker').datepicker('setDate', ToDate);
+                $('#fi_datepicker').datepicker('setDate', FromDate);
+
+                setRank(0);
+
+            }else{
+
+                $('#ff_datepicker').datepicker('setDate', window.localStorage.getItem("det_sop_ff"));
+                $('#fi_datepicker').datepicker('setDate', window.localStorage.getItem("det_sop_fi"));
+
+            }
+
+        });
+
+        function setRank(reload){
+            var fi = document.getElementById("fi_datepicker").value;
+            var ff = document.getElementById("ff_datepicker").value;
+
+            window.localStorage.setItem("det_sop_fi", fi);
+            window.localStorage.setItem("det_sop_ff", ff);
+
+            if (reload) {
+                location.reload();
+            }
+        }
+        
+    </script>
+  </head>
+
+
+
+  <body>
+    <!--Contenido principal -->
+    <div class="container-fluid theme-showcase inline" role="main">
+      <div class="jumbotron vertical-center row-fluid inline" id="mymonitor">
+          <div class="centering text-center inline">
+            <img src="imgs/logo_150_50.png" alt="" />
+            <img src="imgs/help.png" alt="" /><br>
+            <a href="monitor_sistemas.html" class="btn btn-success">Atras</a><br><br> 
+
+
+  <body ng-controller="monitor">
+    <div class="container-fluid theme-showcase" role="main">
+        <div class="jumbotron vertical-center row-fluid" id="mymonitor">
+            <div class="centering text-center">
+
+                <div class="mistickets panel panel-primary centering text-center">
+                  <div class="panel-heading">
+                    <h2 class="panel-title">Monitoreo en vivo</h2>
+                  </div>
+                        <iframe src="graficas/en_vivo.html" width="450" height="450" marginwidth="0" marginheight="0"></iframe>
+                </div>
+
+                <br>
+                <div class="mistickets panel panel-primary centering text-center">
+                  <div class="panel-heading">
+                    <h2 class="panel-title">Indicadores por rango de Fechas</h2>
+                  </div>
+
+                      <table>
+                        <tr>
+                          <td style="padding: 10px" width="20%">
+                            Rango Inicial:
+                          </td>
+                          <td style="padding: 10px" width="20%">
+                            <input width="100px" type="text" id="fi_datepicker">      
+                          </td>
+                          <td style="padding: 10px" width="20%">
+                            Rango Final:
+                          </td>
+                          <td style="padding: 10px" width="20%">
+                            <input width="100px" type="text" id="ff_datepicker"">
+                          </td>
+                          <td style="padding: 10px" width="20%">
+                            <a onclick="setRank(1)" href="javascript:void(0);">Actualizar<img src="imgs/refresh.png"></a>
+                          </td>                                                 
+                        </tr>                           
+                      </table>
+
+
+                      <iframe src="graficas/grafica_origen.html" width="450" height="450" marginwidth="0" marginheight="0"></iframe>
+                      <iframe src="graficas/grafica_caducados.html" width="450" height="450" marginwidth="0" marginheight="0"></iframe>
+                      <iframe src="graficas/grafica_calificaciones.html" width="450" height="450" marginwidth="0" marginheight="0"></iframe>                      
+                      <iframe src="graficas/grafica_levantados.html" width="450" height="450" marginwidth="0" marginheight="0"></iframe>            
+                      <iframe src="graficas/grafica_por_especialista.html" width="450" height="450" marginwidth="0" marginheight="0"></iframe>            
+                </div>
+              </div>
+        </div>             
+    </div>
+  </body>
+</html>

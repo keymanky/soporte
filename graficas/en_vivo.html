@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> 
+    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>  
+    <script type="text/javascript">
+
+        $.get("http://207.254.73.11:888/detexis/soporte/api/asignados_caducados", function(respuestaSolicitud){
+
+            var datosss = new Array();
+            for (var i = 0; i < respuestaSolicitud.length; i++) {    
+                var tmp = {
+                    //especialista: respuestaSolicitud[i].especialista + " Total:" + respuestaSolicitud[i].total + " Caducados: " + respuestaSolicitud[i].caducados,
+                    especialista: respuestaSolicitud[i].especialista,
+                    Vigentes : respuestaSolicitud[i].total,
+                    Caducados : respuestaSolicitud[i].caducados
+                };
+                datosss.push(tmp);               
+            }
+
+
+            var chart = AmCharts.makeChart("chartdiv", {
+            "theme": "light",
+            "type": "serial",
+            "dataProvider": datosss,
+            "valueAxes": [{
+                //"unit": "2",
+                "position": "right",
+                "title": "Tickets",
+            }],
+            "startDuration": 1,
+            "graphs": [{
+                "balloonText": "Abiertos ::: <b>[[value]]</b>",
+                "fillAlphas": 0.9,
+                "lineAlpha": 0.2,
+                "title": "2004",
+                "type": "column",
+                "valueField": "Vigentes"
+            }, {
+                "balloonText": "Caducados ::: <b>[[value]]</b>",
+                "fillAlphas": 0.9,
+                "lineAlpha": 0.2,
+                "title": "2005",
+                "type": "column",
+                "clustered":false,
+                "columnWidth":0.5,
+                "valueField": "Caducados"
+            },   
+            ],
+            "plotAreaFillAlphas": 0.1,
+            "categoryField": "especialista",
+            "categoryAxis": {
+                "gridPosition": "start"
+            },
+            "export": {
+                "enabled": true
+             }
+
+        });
+        }).always()(function(){
+        setTimeout('document.location.reload()',50000);
+        })
+
+    </script>
+    <style type="text/css">
+    #chartdiv {
+        width       : 100%;
+        height      : 424px;
+        font-size   : 10px;
+    }                       
+    </style>
+
+</head>
+    <body style="font-family: Optima, sans-serif">
+        <table style="width: 100%">
+            <tr>
+                <td style="background: #76BEDF" width="50%">
+                    Total de tickets Abiertos
+                </td>
+                <td style="background: #EFD216" width="50%">
+                    Total de Caducados
+                </td>
+            </tr>
+        </table>
+        <div id="chartdiv"></div>                   
+    </body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de tickets</title>
+
+    <meta charset="utf-8"></meta>
+
+    <!-- CSS de Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/my.css" rel="stylesheet" media="screen">
+
+
+<script src="libs/grafica_jquery.min.js"></script>
+<script src="libs/highcharts.js"></script>
+<script>
+
+$(function () {
+    $(document).ready(function () {
+
+        var datosss = new Array();
+        var fecha = new Date();
+
+        $.get("http://207.254.73.11:888/detexis/soporte/api/asignados", function(respuestaSolicitud){
+            for (var i = 0; i < respuestaSolicitud.length; i++) {    
+                var tmp = {
+                    name: respuestaSolicitud[i].especialista,
+                    y : respuestaSolicitud[i].numero
+                };
+                datosss.push(tmp);               
+            }
+
+            Highcharts.setOptions({
+                global: {
+                    useUTC: false
+                }
+            });
+            $('#container').highcharts({
+                chart: {
+                    type: 'spline',
+                    animation: Highcharts.svg, // don't animate in old IE
+                    marginRight: 10,
+                    events: {
+                        load: function () {
+
+                            var numero = null;
+                            $.get("http://187.176.24.218:8080/soporte-loma
+http://187.176.24.218/mesa_ayuda_2/api/contar", function(respuestaSolicitud){
+                                numero = respuestaSolicitud.numero;
+                            }).complete(function(){
+                            })
+                            // set up the updating of the chart each second
+                            var series = this.series[0];
+                            setInterval(function () {
+                                var x = (new Date()).getTime(), // current time
+                                    y = numero;
+                                series.addPoint([x, y], true, true);
+                            }, 10000);
+                        }
+                    }
+                },
+                title: {
+                    text: 'Tickets abiertos'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150
+                },
+                yAxis: {
+                    title: {
+                        text: 'Tickets'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                            this.y + ' tickets<br/>' +
+                            Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>';
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Tickets abiertos',
+                    data: (function () {
+                        // generate an array of random data
+                        var data = [],
+                            time = (new Date()).getTime(),
+                            i;
+
+                        for (i = -19; i <= -1; i += 1) {
+                            data.push({
+                                x: time + i * 10000,
+                                y: undefined
+                            });
+                        }
+                        return data;
+                    }())
+                }]
+            });
+            $('#container2').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Tickets abiertos asignados al especialista:'
+                },
+                subtitle: {
+                    text: fecha.getDate() + "/" + (fecha.getMonth() +1) + "/" + fecha.getFullYear()
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total tickets'
+                    }
+
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.1f}%'
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> del total<br/>'
+                },
+                series: [
+                    {
+                        name: 'Tickets',
+                        colorByPoint: true,
+                        data: datosss
+                    }
+                ]
+            });
+        }).complete(function(){
+        })      
+    });
+    setTimeout('document.location.reload()',60000);
+});
+
+
+
+</script>
+    <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+    <!--Contenido principal -->
+    <div class="container-fluid theme-showcase inline" role="main">
+      <div class="jumbotron vertical-center row-fluid inline" id="mymonitor">
+          <div class="centering text-center inline">
+            <img src="imgs/logo_150_50.png" alt="" />
+            <img src="imgs/help.png" alt="" /><br><br>  
+            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div><br><br>
+            <div id="container2" style="min-width: 310px; height: 600px; max-width: 600px; margin: 0 auto"></div>
+          </div>
+        </div>
+    </div>
+  </body>
+</html>

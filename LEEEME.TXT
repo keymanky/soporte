@@ -1,0 +1,8 @@
+>api>app>index.php
+	BD name , user and password
+
+>Depto id number 7 is SISTEMAS
+
+Path of local
+
+http://localhost:88/detexis/

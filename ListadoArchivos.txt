@@ -1,0 +1,82 @@
+./actualizar.html
+./actualizar_sistemas.html									<<Pantalla donde se gestionan tickets>>
+./app.js													<<Script declaran los modulos>>
+./buscar.html												<<Intefaz para buscar los registros>>
+./categorias.html
+./detexis_soporte_2018_05_28.sql
+./evento.html												<<Ventana auxiliar de comentarios>>
+./grafica.html
+./grafica_caducados.html
+./grafica_caducados_en_vivo.html
+./grafica_levantados.html
+./grafica_origen.html
+./grafica_tickets_asignados.html
+./grafica_tickets_cerrados_abiertos_reasignados.html
+./index.html												<<Pagina inicial del sitio>>
+./LEEEME.TXT
+./monitor.html
+./monitor_sistemas.html
+./mysql_la-loma.sql
+./nuevo.html												<<New Ticket>>
+./services.js
+./stylo.css
+./usuarios.html												<<Manager User>>
+
+
+
+./activar.php												<<Disable/Enable user>>	
+./actualizar_ticket.php
+./actualizar_ticket_causa.php
+./admin.php													<<Actualiza el tipo de admin>>
+./admin2.php												<<Actualiza el tipo de admin2>>
+./admin3.php												<<Actualiza el tipo de admin3>>
+./asignados.php
+./asignados_y_caducados.php
+./asignar.php
+./buscar.php												<<Api que busca los tickets>>
+./caducados.php
+./caducados_en_vivo.php
+./categorias.php											<<Get all categorias>>
+./cerrar.php												<<Cierra el ticket especialista>>
+./cerrar_usuario.php
+./comentar.php
+./consultar_eventos.php
+./contar.php
+./departamentos.php											<<Get all deptos>>
+./especialistas.php											<<Get all admins>>
+./guardar_comentario.php									<<Save result agent>>
+./levantados.php
+./mail.php													<<Update mail user>>
+./nueva_categoria.php
+./nueva_subcategoria.php
+./nuevo_usuario.php											<<New user>>
+./origen.php
+./passwordpp.php											<<Update pass user>>
+./r1.php
+./reabrir.php
+./relacionar_categorias.php
+./resumen.php
+./subcategorias.php											<<Get all Subcategories>>
+./subir.php
+./ticket.php												<<New Ticket BackEnd>>												
+./ticket_actualizado.php									<<Update Ticket>>
+./tickets_abiertos.php
+./tickets_consulta.php										<<Get all details from ticket>>
+./tickets_depto.php											<<Get all tickets by department>>
+./tickets_levantados_dia.php
+./tickets_usuario.php										<<Get all tickets by user>>
+./usuario.php												<<Valida el usuario contraseña en el login>>
+./usuario_consulta.php
+./usuarios.php												<<Get all users>>
+
+
+
+
+TODO
+
+	1) encriptacion password del usuario en base de datos y en script del lado del cliente
+
+
+
+
+find . -maxdepth 1 -type f

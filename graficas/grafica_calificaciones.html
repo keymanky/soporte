@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de tickets</title>
+
+    <meta charset="utf-8"></meta>
+
+    <!-- CSS de Bootstrap -->
+    <link rel="shortcut icon" type="image/x-icon" href="../imgs/icon.ico">
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="../js/theme.js"></script>
+    <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+
+
+    <script>
+
+        $(function () {
+            $(document).ready(function () {
+
+                if(! window.localStorage.getItem("det_sop_usuario")){
+                    window.location= "http://207.254.73.11:888/detexis/soporte/";
+                }
+
+                if(! window.localStorage.getItem("det_sop_fi")){
+
+                    var date = new Date();
+                    var dd = date.getDate();     
+                    var mm = date.getMonth() + 1;
+                    var yyyy = date.getFullYear();
+
+                    var ff = mm + '/' + dd + '/' + yyyy;
+                    var fi = mm + '/01/' + yyyy;
+
+                }else{
+                    var fi = window.localStorage.getItem("det_sop_fi");
+                    var ff = window.localStorage.getItem("det_sop_ff");
+                }
+
+                console.log(fi + "-" + ff);
+                var json ={};
+                json.fi = fi;
+                json.ff = ff;
+                var datosss = new Array();
+
+                $.ajax({
+                      type: "POST",
+                      url: "http://207.254.73.11:888/detexis/soporte/api/ranking_especialistas",
+                      data: JSON.stringify(json),
+                      async: true,
+                      contentType: "application/json; charset=utf-8",
+                      success: function (respuestaSolicitud) {
+
+
+                        for (var i = 0; i < respuestaSolicitud.length; i++) {    
+                            var tmp = {
+                                name: respuestaSolicitud[i].especialista,
+                                y : respuestaSolicitud[i].calificacion
+                            };
+                            datosss.push(tmp);               
+                        }
+                        
+
+                        Highcharts.chart('container', {
+
+                            title: {
+                                text: 'Ranking de atenci\u00F3n a Clientes'
+                            },
+                            series: [{
+                                type: 'pie',
+                                allowPointSelect: true,
+                                keys: ['name', 'y', 'selected', 'sliced'],
+                                data: datosss,
+                                showInLegend: true
+                            }]
+                        });
+
+
+
+                      }
+                });
+            });
+        });
+    
+    </script>
+
+
+
+
+  <body>
+
+    <!--Contenido principal -->
+    <div class="container-fluid theme-showcase inline" role="main">           
+        <div id="container" style="min-width: 310px; height: 400px; max-width: 400px; margin: 3px auto"></div>
+    </div>
+  </body>
+
+</html>

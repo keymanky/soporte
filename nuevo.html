@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="nuevo">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de tickets</title>
+
+    <meta charset="utf-8"></meta>
+    <script src="libs/angular.js"></script>
+    <script src="app.js"></script>    
+    <script src="controllers/nuevo.js"></script>    
+    <script src="services.js"></script> 
+  
+    <!-- CSS de Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/my.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/icon.ico">
+        
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <script>
+
+        var validNavigation = false;
+
+          function wireUpEvents() {
+              var dont_confirm_leave = 0; //set dont_confirm_leave to 1 when you want the    user to be able to leave withou confirmation
+               var leave_message = 'Esta seguro de que desea salir, los cambios que no han sido guardados se perderan'
+               function goodbye(e) {
+                if (!validNavigation) {
+                  return leave_message;
+                }
+              }
+              window.onbeforeunload=goodbye;
+
+              // Attach the event keypress to exclude the F5 refresh
+              $(document).bind('keypress', function(e) {
+                  if (e.keyCode == 116){
+                    validNavigation = true;
+                   }
+              });
+              // Attach the event click for all links in the page
+              $("a").bind("click", function() {
+                  validNavigation = true;
+              });
+              // Attach the event submit for all forms in the page
+              $("form").bind("submit", function() {
+                validNavigation = true;
+              });
+              // Attach the event click for all inputs in the page
+              $("input[type=submit]").bind("click", function() {
+                validNavigation = true;
+              });
+          }
+
+        //Para el adjuntar el archivo
+        $(document).on('change', '.btn-file :file', function() {
+          var input = $(this),
+              numFiles = input.get(0).files ? input.get(0).files.length : 1,
+              label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+          input.trigger('fileselect', [numFiles, label]);
+        });
+
+        //Oculta div de trabajo y el de archivos
+        $(document).ready( function() {
+          document.getElementById("trabajando").style.visibility = "hidden";
+          wireUpEvents();
+            $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+                
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles + ' files selected' : label;
+                
+                if( input.length ) {
+                    input.val(log);
+                } else {
+                    if( log ) alert(log);
+                }
+                
+            });
+        });
+    </script>
+  </head>
+
+
+  <body ng-controller="nuevo">
+  
+    <!-- Solo se muestra cuando el sistema esta trabajando -->
+    <div id="trabajando">
+        <div class="alert alert-dismissible alert-warning" id="process">
+          <strong>Su solicitud esta siendo procesada, por favor espere ...</strong>
+        </div>     
+    </div>
+
+    <!--Contenido principal -->
+    <div class="container-fluid theme-showcase inline" role="main">
+      <div class="jumbotron vertical-center row-fluid inline" id="mymonitor">
+          <div class="centering text-center inline">
+            <img src="imgs/logo_150_50.png" alt="" />
+            <img src="imgs/help.png" alt="" /><br><br>
+           
+            <table class="table centering text-center">
+              <tbody>
+                <tr>
+                  <td>
+                      <div class="nuevo panel panel-primary">
+                        <div class="panel-heading">
+                          <h2 class="panel-title">Información General</h2>
+                        </div>
+                      </div>
+                  </td>
+                  <td>
+                      <div class="nuevo mistickets panel panel-primary">
+                        <div class="panel-heading">
+                          <h2 class="panel-title">Más Información</h2>
+                        </div>
+                      </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="registrar">
+                    <form class="nuevo form-horizontal" ng-submit="submit()" enctype="multipart/form-data">
+                      <fieldset>
+                        <div class="form-group">
+                          <label for="inputAsunto" class="col-lg-2 control-label">Problema</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="problema" placeholder="Resumen del problema" ng-model="asunto" maxlength="50" required>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="textArea" class="col-lg-2 control-label">Detalle</label>
+                          <div class="col-lg-10">
+                            <textarea class="form-control" rows="6" id="detalle" ng-model="detalle" required placeholder="Ingrese aqui la descripcion detallada"></textarea>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="select" class="col-lg-2 control-label">Categorías</label>
+                          <div class="col-lg-10">
+                            <select required class="form-control" id="categoria" name="tipo" ng-model="listacat.id" ng-change="seleccionarcategoria(listacat.id)">
+                                <option value="{{listacat.id}}" ng-model="listacat.id" ng-repeat="listacat in categorias">{{listacat.nombre}}</option>
+                            </select>
+                            <br>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="select" class="col-lg-2 control-label">Subcategoría</label>
+                          <div class="col-lg-10">
+                            <select ng-if="listacat.id" class="form-control" name="subcategoria" ng-model="listasub.id" ng-change="seleccionarsubcategoria(listasub.id)" id="subcategoria">
+                                <option value="{{listasub.id}}" ng-model="listasub.id" ng-repeat="listasub in subcategorias">{{listasub.nombre}}</option>
+                            </select>
+                            <br>               
+                          </div>
+                        </div>    
+                        <div class="form-group">
+                          <label for="select" class="col-lg-2 control-label">Prioridad</label>
+                          <div class="col-lg-10">
+                            <input type="text" ng-model="prioridad" class="form-control" id="prioridad"  disabled>                          
+<!--                             <select disabled class="form-control" ng-model="prioridad" id="prioridad">
+                              <option>normal</option>
+                              <option>media</option>
+                              <option>alta</option>
+                            </select>  -->               
+                            <br>
+                          </div>
+                        </div>  
+
+                        <div class="form-group">
+                          <label for="select" class="col-lg-2 control-label">Medio de reporte</label>
+                          <div class="col-lg-10">
+                            <select class="form-control" ng-model="medio" id="medio">
+                              <option>Sistema de tickets</option>
+                              <option>Llamada</option>
+                              <option>Correo</option>
+                            </select>
+                            <br>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="select" class="col-lg-2 control-label">Archivo de Evidencia</label>
+                          <div class="col-lg-10">
+                            <iframe src="upload/" width="450" height="200" marginwidth="0" marginheight="0"></iframe> 
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="col-lg-10 col-lg-offset-2 centering text-center">
+<!--                             <button type="reset" class="btn btn-default">Cancelar</button> -->
+                            <button id="btn_guardar" type="submit" class="btn btn-primary">Guardar</button>
+                          </div>
+                        <br>
+
+                        </div>
+                      </fieldset>
+                    </form>
+                  </td>
+
+                  <td>
+                    <form class="nuevo form-horizontal">
+                      <fieldset>
+                        <div class="form-group">
+                          <label for="inputEmail" class="col-lg-2 control-label">Estado</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="inputEmail" placeholder="abierto" disabled>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="asignado" class="col-lg-2 control-label">Asignado a</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="asignado" placeholder="admin" disabled>
+                          </div>
+                        </div>
+                  
+                        <div class="form-group">
+                          <label for="fcreacion" class="col-lg-2 control-label">Fecha de creación</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="fcreacion" placeholder="{{CurrentDate | date:'yyyy-MM-dd HH:mm:ss Z'}}" disabled>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="factualizacion" class="col-lg-2 control-label">Fecha de cierre</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="factualizacion" placeholder="0000-00-00 00:00:00" disabled>
+                          </div>
+                        </div>             
+
+                        <div class="form-group">
+                          <label for="ucreacion" class="col-lg-2 control-label">Usuario de creación</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="ucreacion" placeholder="{{usuario.nombre}} {{usuario.paterno}} {{usuario.materno}}" disabled>
+                          </div>
+                        </div>  
+
+                        <div class="form-group">
+                          <label for="ucreacion" class="col-lg-2 control-label">Puesto</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="ucreacion" placeholder="{{usuario.puesto}}" disabled>
+                          </div>
+                        </div>               
+
+                        <div class="form-group">
+                          <label for="ucreacion" class="col-lg-2 control-label">Cliente</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="ucreacion" placeholder="{{usuario.depto_nombre}}" disabled>
+                          </div>
+                        </div>                 
+                      </fieldset>
+                    </form>  
+
+
+                    <div class="nuevo mistickets panel panel-primary">
+                      <div class="panel-heading">
+                        <h2 class="panel-title">Contáctanos</h2>
+                      </div>
+                    </div>
+                    <form class="nuevo form-horizontal">
+                      <fieldset>
+                        <div class="form-group">
+                          <label for="inputEmail" class="col-lg-2 control-label">Detexis</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="inputEmail" placeholder="Tel 5249 0950 |  info@detexis.com" disabled>
+                          </div>
+                        </div>
+                  
+                        <div class="form-group">
+                          <label for="fcreacion" class="col-lg-2 control-label">Atención a Clientes</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="fcreacion" placeholder="Nèlia Carrasco" disabled>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="facturacion" class="col-lg-2 control-label">Facturación</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="facturacion" placeholder="Miriam Soto" disabled>
+                          </div>
+                        </div>              
+
+                        <div class="form-group">
+                          <label for="ventas" class="col-lg-2 control-label">Ventas</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="ventas" placeholder="Sylay Franco" disabled>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="monitoreo" class="col-lg-2 control-label">Monitoreo</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="monitoreo" placeholder="Supervisor Sonia Reyes" disabled>
+                          </div>
+                        </div>
+
+                      </fieldset>
+                    </form> 
+
+                    <div class="alert alert-dismissible alert-info">
+                      <strong>Horario de Servicio: </strong> Lunes a Viernes 8:30 a 17:30 hrs. Monitoreo 24 Hrs.
+                    </div>
+                  </td>
+                </tr>
+              </tbody>  
+            </table>
+          </div>
+      </div>
+    </div>
+
+  </body>
+
+</html>

@@ -1,0 +1,11 @@
+CENTER VERTICAL
+
+	<div class="container-fluid theme-showcase" role="main">
+	    <div class="jumbotron vertical-center row-fluid">
+	        <div class="centering text-center">
+
+	.row-fluid {
+		height: 100%; 
+		display:table-cell; 
+		vertical-align: middle;
+	}

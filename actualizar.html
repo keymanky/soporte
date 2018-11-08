@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="actualizar">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de tickets</title>
+
+    <meta charset="utf-8"></meta>
+    <script src="libs/angular.js"></script>
+    <!--Archivo principal del angular y su routeo-->
+    <script src="app.js"></script>    
+    <script src="controllers/actualizar.js"></script>   
+    <!--2) El controlador y la 3) fuente de datos-->   
+    <script src="services.js"></script> 
+  
+    <!-- CSS de Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/my.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/icon.ico">    
+     <!-- Librería jQuery requerida por los plugins de JavaScript -->
+    <script src="js/jquery.js"></script>
+    <script src="js/util.js"></script>
+ 
+    <!-- Todos los plugins JavaScript de Bootstrap (también puedes
+         incluir archivos JavaScript individuales de los únicos
+         plugins que utilices) -->
+    <script src="js/bootstrap.min.js"></script> 
+    <script type="text/javascript">
+
+        var validNavigation = false;
+
+        function wireUpEvents() {
+            var dont_confirm_leave = 0; //set dont_confirm_leave to 1 when you want the    user to be able to leave withou confirmation
+             var leave_message = 'Esta seguro de que desea salir sin haber guardado los cambios'
+             function goodbye(e) {
+              if (!validNavigation) {
+                return leave_message;
+              }
+            }
+            window.onbeforeunload=goodbye;
+
+            // Attach the event keypress to exclude the F5 refresh
+            $(document).bind('keypress', function(e) {
+                if (e.keyCode == 116){
+                  validNavigation = true;
+                 }
+            });
+            // Attach the event click for all links in the page
+            $("a").bind("click", function() {
+                validNavigation = true;
+            });
+            // Attach the event submit for all forms in the page
+            $("form").bind("submit", function() {
+              validNavigation = true;
+            });
+            // Attach the event click for all inputs in the page
+            $("input[type=submit]").bind("click", function() {
+              validNavigation = true;
+            });
+        }
+
+        // Wire up the events as soon as the DOM tree is ready
+        $(document).ready(function() {
+          wireUpEvents();
+        });
+
+    </script>
+
+    <!-- librerías opcionales que activan el la de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+
+  <body ng-controller="actualizar" onload="enable_()">
+
+    <!-- Solo se muestra cuando el sistema esta trabajando -->
+    <div id="trabajando">
+        <div class="alert alert-dismissible alert-warning" id="process">
+          <strong>Su solicitud esta siendo procesada, por favor espere ...</strong>
+        </div>     
+    </div>
+
+    <div class="container-fluid theme-showcase inline" role="main">
+        <div class="jumbotron vertical-center row-fluid inline" id="mymonitor">
+            <div class="centering text-center inline">
+              <img src="imgs/logo_150_50.png" alt="" />
+              <img src="imgs/help.png" alt="" /><br>
+              <a href="" ng-click="atras()" class="btn btn-success">Atras</a><br><br>        
+              <table class="table centering text-center">
+                <tbody>
+
+                  <tr>
+                    <td>
+                        <div class="nuevo panel panel-primary">
+                          <div class="panel-heading">
+                            <h2 class="panel-title">Información General No. #{{tickets.id}}</h2>
+                          </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="nuevo mistickets panel panel-primary">
+                          <div class="panel-heading">
+                            <h2 class="panel-title">Más Información</h2>
+                            <h2 class="panel-title" ng-if="tickets.id_reabierto">Ticket reabierto (de #{{tickets.id_reabierto}})</h2>                            
+                          </div>
+                        </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                      <td class="registrar">
+                        <form id="form" class="nuevo form-horizontal" ng-submit="submit()">
+                          <fieldset>
+                            <div class="form-group">
+                              <label for="inputAsunto" class="col-lg-2 control-label">Problema</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="inputAsunto" ng-value="tickets.resumen" ng-model="tickets.resumen" maxlength="50" required >
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="textArea" class="col-lg-2 control-label">Detalle</label>
+                              <div class="col-lg-10">
+                                <textarea class="form-control" rows="6" id="textArea" ng-model="tickets.detalle" ng-value="tickets.detalle" required></textarea>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="select" class="col-lg-2 control-label">Categorías</label>
+                              <div class="col-lg-10">
+                                <input required class="form-control" id="select" name="tipo" ng-model="tickets.categorias_nombre" disabled>
+                                <input required class="form-control" id="select" name="tipo" ng-model="tickets.subcategorias_nombre" disabled>              
+                                <br>                 
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="select" class="col-lg-2 control-label">Prioridad</label>
+                              <div class="col-lg-10">
+                                <select class="form-control" ng-model="tickets.prioridad">
+                                  <option>normal</option>
+                                  <option>media</option>
+                                  <option>alta</option>
+                                </select>   
+                                <br>
+                              </div>
+                            </div>  
+                            <div class="form-group">
+                              <label for="select" class="col-lg-2 control-label">Origen del problema</label>
+                              <div class="col-lg-10">
+                                <select class="form-control" ng-model="tickets.causa">
+                                  <option>Por peticion del Usuario</option>                                
+                                  <option>Falla del sistema</option>
+                                  <option>Falla del usuario</option>
+                                  <option>Falla en comunicaciones</option>
+                                  <option>Desconocido</option>
+                                </select>
+                                <br>
+                              </div>
+                            </div>
+
+                            <div class="form-group">
+                              <label for="select" class="col-lg-2 control-label">Medio de reporte</label>
+                              <div class="col-lg-10">
+                                <select class="form-control" ng-model="tickets.medio">
+                                  <option>Sistema de tickets</option>
+                                  <option>Llamada</option>
+                                  <option>Correo</option>
+                                </select>
+                                <br>
+                              </div>
+                            </div>
+
+                            </div>     
+                            <div class="form-group" class="text-left">
+                              <label for="inputEmail" class="col-lg-2 control-label">Archivo adjunto</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="archivoadjunto" placeholder="{{tickets.archivo}}" disabled>
+                                <a href="upload/uploads/{{tickets.archivo}}">Descargar</a>
+                              </div>                              
+                            </div>         
+                          </fieldset>
+                        </form>
+                      </td>
+
+                      <td>
+                        <form class="nuevo form-horizontal">
+                          <fieldset>
+
+                            <div class="form-group">
+                              <label for="inputEmail" class="col-lg-2 control-label">Estatus del usuario</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="estadou" placeholder="{{tickets.estado_usuario}}" disabled>
+                              </div>
+                            </div>
+
+                            <div class="form-group">
+                              <label for="inputEmail" class="col-lg-2 control-label">Estatus del especialista</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="estadoe" placeholder="{{tickets.estado_e}}" disabled>
+                              </div>                        
+                            </div>                            
+
+                            <div class="form-group">
+                              <label for="asignado" class="col-lg-2 control-label">Asignado a</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" placeholder="{{tickets.nombre_especialista}}" disabled>
+                              </div>
+                            </div>
+                      
+                            <div class="form-group">
+                              <label for="fcreacion" class="col-lg-2 control-label">Fecha de creación</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="fcreacion" placeholder="{{tickets.tms_creacion}}" disabled>
+                              </div>
+                            </div>
+
+                            <div class="form-group">
+                              <label for="factualizacion" class="col-lg-2 control-label">Fecha de cierre</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="fc" placeholder="{{tickets.tms_deadline}}" disabled>
+                              </div>
+                            </div>             
+
+                            <div class="form-group">
+                              <label for="ucreacion" class="col-lg-2 control-label">Usuario de creación</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="ucreacion" placeholder="{{tickets.usuario_creacion}}" disabled>
+                              </div>
+                            </div>  
+
+                            <div class="form-group">
+                              <label for="ucreacion" class="col-lg-2 control-label">Puesto</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="puesto" placeholder="{{tickets.puesto}}" disabled>
+                              </div>
+                            </div>               
+
+                            <div class="form-group">
+                              <label for="ucreacion" class="col-lg-2 control-label">Departamento</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="depto" placeholder="{{tickets.depto}}" disabled>
+                              </div>
+                            </div>    
+
+                            <div class="form-group">
+                              <label for="ucreacion" class="col-lg-2 control-label">Email</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="mail" placeholder="{{tickets.email}}" disabled>
+                              </div>
+                            </div> 
+
+                            <div class="form-group">
+                              <label for="ucreacion" class="col-lg-2 control-label">IP</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="ip" placeholder="{{tickets.ip}}" disabled>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="ucreacion" class="col-lg-2 control-label">TeamViewer</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="tv" placeholder="{{tickets.TV}}" disabled>
+                              </div>
+                            </div>
+
+                          </fieldset>
+                        </form>  
+
+                    <div class="nuevo mistickets panel panel-primary">
+                      <div class="panel-heading">
+                        <h2 class="panel-title">Contáctanos</h2>
+                      </div>
+                    </div>
+                    <form class="nuevo form-horizontal">
+                      <fieldset>
+                        <div class="form-group">
+                          <label for="inputEmail" class="col-lg-2 control-label">Detexis</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="inputEmail" placeholder="Tel 5249 0950 |  info@detexis.com" disabled>
+                          </div>
+                        </div>
+                  
+                        <div class="form-group">
+                          <label for="fcreacion" class="col-lg-2 control-label">Atención a Clientes</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="fcreacion" placeholder="Nèlia Carrasco" disabled>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="facturacion" class="col-lg-2 control-label">Facturación</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="facturacion" placeholder="Miriam Soto" disabled>
+                          </div>
+                        </div>              
+
+                        <div class="form-group">
+                          <label for="ventas" class="col-lg-2 control-label">Ventas</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="ventas" placeholder="Sylay Franco" disabled>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="monitoreo" class="col-lg-2 control-label">Monitoreo</label>
+                          <div class="col-lg-10">
+                            <input type="text" class="form-control" id="monitoreo" placeholder="Supervisor Sonia Reyes" disabled>
+                          </div>
+                        </div>
+
+                      </fieldset>
+                    </form> 
+
+                    <div class="alert alert-dismissible alert-info">
+                      <strong>Horario de Servicio: </strong> Lunes a Viernes 8:30 a 17:30 hrs. Monitoreo 24 Hrs.
+                    </div>
+
+                      </td>
+                  </tr>
+
+                </tbody>  
+              </table>
+            </div>
+
+            <div class="centering text-center inline"> 
+                <div class="nuevo mistickets panel panel-primary">
+                  <div class="panel-heading">
+                    <h2 class="panel-title">Historia de mi ticket</h2><a href="javascript:history.go(0)">
+                    <img src="imgs/refresh.png" alt="" title="Actualizar pantalla">
+                    </a>
+                  </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped table-hover" style="padding:0px">
+                            <thead>
+                              <tr>
+                                <th style="vertical-align: middle; text-align: center;">Especialista</th>
+                                <th style="vertical-align: middle; text-align: center;">Tiempo consumido</th>
+                                <th style="vertical-align: middle; text-align: center;">Comentario</th>
+                                <th style="vertical-align: middle; text-align: center;">Editar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-if="eventos.length > 0" ng-repeat="t in eventos" class="{{t.caducado}}">
+                                <td class="nopadding">{{t.especialista}}<img ng-if="t.id_evento_padre" src="imgs/replay.png" alt=""><br>Inicio: {{t.tms_creacion}}<br>Fin: {{t.tms_cierre}}</td>
+                                <td class="nopadding">{{t.minutos_despegable}}</td>
+                                <td class="nopadding">
+                                  {{t.comentario}}<br>
+                                </td>
+                                <td class="nopadding">
+                                  <a ng-if="usuario.id_departamento == '7'" href="" ng-click="guardar_comentario(t.id,t.comentario, t.id_especialista)"><img src="imgs/guardar.png" title="Guardar el comentario de {{t.id}}"></a>
+<!--                                   <a ng-if="usuario.id_departamento != '7'" href="" ng-click="retroalimentar(t.id,tickets.id, usuario.empleado)"><img src="imgs/retroalimentar.png" title="Guardar el comentario de {{t.id}}"></a> -->
+                                </td>
+                              </tr>
+                            </tbody>
+                    </table>
+                </div>  
+            </div>         
+
+
+
+        </div>
+    </div>
+
+  </body>
+</html>

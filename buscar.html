@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="buscar">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de tickets</title>
+
+    <meta charset="utf-8"></meta>
+    <script src="libs/angular.js"></script>
+    <script src="app.js"></script>    
+    <script src="controllers/buscar.js"></script>    
+    <script src="services.js"></script> 
+  
+    <!-- CSS de Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/my.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/icon.ico">    
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="css/jquery-ui.min.css">    
+    <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+      $(function() {
+        $( "#fi_datepicker" ).datepicker();
+        $( "#ff_datepicker" ).datepicker();
+      });
+    </script>
+
+  </head>
+
+
+  <body ng-controller="buscar">
+    <div class="container-fluid theme-showcase" role="main">
+        <div class="jumbotron vertical-center row-fluid" id="mymonitor">
+            <div class="centering text-center">
+
+                <!-- Menu del usuario -->
+                  <table class="table centering text-center">
+                            <tr>
+                                <td colspan="4">
+                                  <img src="imgs/logo_150_50.png" alt="" />
+                                  <img src="imgs/help.png" alt="" /><br>
+                                  <a href="" ng-click="atras()" class="btn btn-success">Atras</a><br><br>             
+                                  <div class="nuevo panel panel-primary">
+                                      <div class="panel-heading">
+                                          <h2 class="panel-title">Buscar tickets</h2>
+                                      </div>
+                                  </div>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td style="font-weight: bold; padding: 7px;" colspan="2">Por Fecha de Apertura</td>
+                                <td style="font-weight: bold; padding: 7px;" colspan="2">Por No. Ticket</td>
+                            </tr>
+
+                            <tr>
+                                <td width="25%">
+                                    Rango Inicial:
+                                </td>
+                                <td width="25%">
+                                    <input width="100px" type="text" id="fi_datepicker" ng-model="fi_creacion" value="{{fi_creacion}}">
+                                </td>
+                                <td width="25%">
+                                    N&uacute;mero de Ticket
+                                </td>
+                                <td width="25%">
+                                  <input ng-model="id" type="text" class="form-control" id="problema" placeholder="" ng-model="id" maxlength="15" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    Rango Final:
+                                </td>
+                                <td width="25%">
+                                    <input width="100px" type="text" id="ff_datepicker" ng-model="ff_creacion" value="{{ff_creacion}}">
+                                </td>
+                                <td colspan="2">
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <button id="btn_rango" type="submit" class="btn btn-primary" ng-click="buscar_rango()">Buscar</button>
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <button id="btn_id" type="submit" class="btn btn-primary" ng-click="buscar_id()" >Buscar</button>
+                                </td>
+                            </tr>                  
+                  </table>
+                <!-- Fin del menu del usuario -->
+
+
+                <!-- Busqueda de varios tickest -->
+                <br>
+                <div class="mistickets panel panel-primary centering text-center">
+                  <div class="panel-heading">
+                    <h2 class="panel-title">Resultados de la &uacute;ltima busqueda</h2>
+                  </div>
+
+                  <div class="panel-body">
+                    <table class="table table-striped table-hover" style="padding:0px">
+                      <thead>
+                        <tr>
+                          <th style="vertical-align: middle; text-align: center;">Id</th>
+                          <th style="vertical-align: middle; text-align: center;">Resumen</th>
+                          <th style="vertical-align: middle; text-align: center;">Categoría</th>
+                          <th style="vertical-align: middle; text-align: center;">Subcategoría</th>
+                          <th style="vertical-align: middle; text-align: center;">Estatus</th>
+                          <th style="vertical-align: middle; text-align: center;">Departamento</th>
+                          <th style="vertical-align: middle; text-align: center;">Asignado</th>
+                          <th style="vertical-align: middle; text-align: center;">Prioridad</th>
+                          <th style="vertical-align: middle; text-align: center;">Fecha de apertura</th>
+                          <th style="vertical-align: middle; text-align: center;">Ver detalle</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="t in tickets">
+                          <td class="nopadding">{{t.id}}</td>
+                          <td class="nopadding">{{t.resumen}}</td>
+                          <td class="nopadding">{{t.categoria}}</td>
+                          <td class="nopadding">{{t.subcategoria}}</td>
+                          <td class="nopadding">{{t.estado}}</td>
+                          <td class="nopadding">{{t.depto}}</td>
+                          <td class="nopadding">{{t.asignado}}</td>
+                          <td class="nopadding">{{t.prioridad}}</td>
+                          <td class="nopadding">{{t.tms_creacion}}</td>
+                          <td class="nopadding" ng-if="t.id"><a href="" ng-click="consultar_ticket(t.id)"><img src="imgs/detalle.png" title="Ver detalles del ticket {{t.id}}"></a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    </div>
+                </div>
+                <!-- Busqueda de varios tickets -->
+            </div>
+        </div>
+    </div>
+    <!-- Todos los plugins JavaScript de Bootstrap (también puedes
+         incluir archivos JavaScript individuales de los únicos
+         plugins que utilices) -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="categorias">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de tickets</title>
+
+    <meta charset="utf-8"></meta>
+    <script src="libs/angular.js"></script>
+    <script src="app.js"></script>    
+    <script src="controllers/categorias.js"></script>    
+    <script src="services.js"></script> 
+  
+    <!-- CSS de Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/my.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/icon.ico">    
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+
+
+  <body ng-controller="categorias">
+    <!--Contenido principal -->
+    <div class="container-fluid theme-showcase inline" role="main">
+      <div class="jumbotron vertical-center row-fluid inline" id="mymonitor">
+          <div class="centering text-center inline">
+            <img src="imgs/logo_150_50.png" alt="" />
+            <img src="imgs/help.png" alt="" /><br>
+            <a href="monitor_sistemas.html" class="btn btn-success">Atras</a><br><br>             
+            <div class="nuevo panel panel-primary">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Administrar categorias</h2>
+                </div>
+            </div>
+          </div>
+
+    <!-- Solo se muestra cuando el sistema esta trabajando -->
+            <table>
+              <tr>
+                <td>
+                    <div class="form-group text-left">
+                      <div class="col-lg-10">
+                        <select class="form-control" ng-model="categoria">
+                            <option value="{{espe.id}}" ng-repeat="espe in categorias" >{{espe.nombre}}
+                            </option>
+                        </select>               
+                      </div>
+                    </div>
+
+                </td>
+                <td>
+                        <button id="btn_guardar" type="submit" class="btn btn-primary" ng-click="guarda_relacion()" >Guardar relacion</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <div class="form-group text-left">
+                      <div class="col-lg-10">
+                        <select class="form-control" ng-model="subcategoria">
+                            <option value="{{usuarios.id}}" ng-repeat="usuarios in subcategorias" >{{usuarios.nombre}}
+                            </option>
+                        </select>               
+                    </div>
+                    </div>
+                </td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  
+                      <div class="col-lg-10">
+                        <input type="text" class="form-control" ng-model="new_subcategoria" placeholder="Nueva subcategoria">
+                      </div>
+                </td>
+                <td>
+                        <br>
+                        <button id="btn_guardar" type="submit" class="btn btn-primary" ng-click="nueva_subcategoria()" >Nueva subcategoria</button>
+                        <br><br>
+                </td>
+              </tr>    
+              <tr>
+                <td>
+                  
+                      <div class="col-lg-10">
+                        <input type="text" class="form-control" ng-model="new_categoria" placeholder="Nueva categoria">
+                      </div>
+                </td>
+                <td>
+                        <br>
+                        <button id="btn_guardar" type="submit" class="btn btn-primary" ng-click="nueva_categoria()" >Nueva categoria</button>
+                        <br><br>
+                </td>
+              </tr>           
+            </table> 
+      </div>
+    </div>
+
+  </body>
+
+</html>

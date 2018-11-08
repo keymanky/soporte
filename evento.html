@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="evento">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de tickets</title>
+
+    <meta charset="utf-8"></meta>
+    <script src="libs/angular.js"></script>
+    <!--Archivo principal del angular y su routeo-->
+    <script src="app.js"></script>    
+    <script src="controllers/evento.js"></script>   
+    <!--2) El controlador y la 3) fuente de datos-->   
+    <script src="services.js"></script>    
+    <script src="js/util.js"></script>
+  
+    <!-- CSS de Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/my.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/icon.ico">    
+ 
+    <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body ng-controller="evento" onload="enable_()">
+
+    <!-- Solo se muestra cuando el sistema esta trabajando -->
+    <div id="trabajando">
+        <div class="alert alert-dismissible alert-warning" id="process">
+          <strong>Su solicitud esta siendo procesada, por favor espere ...</strong>
+        </div>     
+    </div>
+
+    <div class="container-fluid theme-showcase" role="main">
+        <div class="jumbotron vertical-center row-fluid">
+            <div class="centering text-center">
+            <h2>Sistema de tickets</h2>
+            <img src="imgs/logo_150_50.png" alt="" />
+            <img src="imgs/help.png" alt="" /><br><br>
+                <div id="login" class="panel panel-primary centering text-center">
+                  <div class="panel-heading">
+                    <h2 class="panel-title"></h2>
+                  </div>
+                  <div class="panel-body" id="login_form">
+                    <form id="form" class="form-horizontal">
+                      <fieldset>
+                                <label for="empleado">Causa:</label><br/>
+                                <select class="form-control"  ng-model="causa">
+                                  <option>Desconocido</option>
+                                  <option>Por peticion del Usuario</option>
+                                  <option>Falla del sistema</option>
+                                  <option>Falla del usuario</option>
+                                  <option>Falla en comunicaciones</option>
+                                </select>
+                                <br/>
+
+                        <div class="form-group text-left">
+                          <label for="empleado">Comentario</label>
+
+                          <div class="col-lg-10">
+                            <textarea class="form-control" rows="6" id="detalle" ng-model="comentario" required></textarea>
+                          </div>
+                        </div>
+                      </fieldset>                
+                      <button type="submit" class="btn btn-success" ng-click="guardar()">Guardar</button>
+                    </form>
+                  </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Librería jQuery requerida por los plugins de JavaScript -->
+    <script src="js/jquery.js"></script>
+ 
+    <!-- Todos los plugins JavaScript de Bootstrap (también puedes
+         incluir archivos JavaScript individuales de los únicos
+         plugins que utilices) -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

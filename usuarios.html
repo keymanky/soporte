@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="usuarios">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+
+    <title>Sistema de tickets</title>
+
+    <meta charset="utf-8"></meta>
+    <script src="libs/angular.js"></script>
+    <script src="app.js"></script>    
+    <script src="controllers/usuarios.js"></script>    
+    <script src="services.js"></script> 
+  
+    <!-- CSS de Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/my.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="imgs/icon.ico">
+    
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+
+
+  <body ng-controller="usuarios">
+    <!--Contenido principal -->
+    <div class="container-fluid theme-showcase inline" role="main">
+      <div class="jumbotron vertical-center row-fluid inline" id="mymonitor">
+          <div class="centering text-center inline">
+            <img src="imgs/logo_150_50.png" alt="" />
+            <img src="imgs/help.png" alt="" /><br>
+            <a href="monitor_sistemas.html" class="btn btn-success">Atras</a><br><br>              
+           
+            <div class="nuevo panel panel-primary">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Administrar Administradores</h2>
+                </div>
+                <table>
+                  <tr>
+                    <td>
+                        <div class="form-group text-left">
+                          <div class="col-lg-10">
+                            <select class="form-control" ng-model="aadmin">
+                                <option value="{{espe.empleado}}" ng-repeat="espe in especialistas" >{{espe.nombre}}
+                                </option>
+                            </select>               
+                          </div>
+                        </div>
+
+                    </td>
+                    <td class="aligenacion_izquierda">
+                            <br>
+                            <button id="btn_guardar" type="submit" class="btn btn-primary" ng-model="aadmin" ng-click="admin(1)" >Convertir a administrador 1 ( 6:00 - 14:00 )</button>
+                            <br>
+                            <button id="btn_guardar" type="submit" class="btn btn-primary" ng-model="aadmin" ng-click="admin(2)" >Convertir a administrador 2 ( 14:00 - 22:00 )</button>
+                            <br>                       
+                            <button id="btn_guardar" type="submit" class="btn btn-primary" ng-model="aadmin" ng-click="admin(3)" >Convertir a administrador 3 (22:00 - 06:00)</button>
+                            <br><br>                        
+                    </td>
+                  </tr>
+                </table>             
+            </div>
+
+            <div class="nuevo panel panel-primary">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Administrar Usuarios</h2>
+                </div>
+                <table>
+                  <tr>
+                    <td>
+                        <div class="form-group text-left">
+                          <div class="col-lg-7">
+                            <select class="form-control" ng-model="usuarios.empleado" ng-change="seleccionarusuario(usuarios.empleado)">
+                                <option value="{{usuarios.empleado}}" ng-repeat="usuarios in usuarios">{{usuarios.nombre}}
+                                </option>
+                            </select>
+                          </div>             
+                        </div>
+                                <div class="col-lg-7">
+                                  <input type="text" class="form-control" ng-model="usuario_seleccionado_email" placeholder="Email nuevo">
+                                </div>
+                          </div>
+                          </div>
+                                <div class="col-lg-7">
+                                  <input type="text" class="form-control" ng-model="usuario_seleccionado_password" placeholder="Password nuevo">
+                                </div>
+                          </div>
+                    </td>
+                    <td class="aligenacion_izquierda">
+                            <br>
+                            <button id="btn_guardar" type="submit" class="btn btn-primary" ng-model="activo" ng-click="activar()" >Activar / Desactivar</button>
+                            <br>
+                            <button id="btn_guardar" type="submit" class="btn btn-primary" ng-model="activo" ng-click="email()" >Cambiar email</button>
+                            <br>
+                            <button id="btn_guardar" type="submit" class="btn btn-primary" ng-model="activo" ng-click="password()" >Cambiar password</button>
+                            <br><br>                      
+                    </td>
+                  </tr>
+                </table>             
+            </div>
+
+            <div class="nuevo panel panel-primary">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Nuevo usuario</h2>
+                </div>
+
+                <form ng-submit="guardar_usuario()">
+                    <table>
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="ncuenta" placeholder="Nombre de Cuenta" maxlength="18" required>
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="nnombre" placeholder="Nombre" required>
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr>  
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="npaterno" placeholder="Apellido Paterno" required>
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr>  
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="nmaterno" placeholder="Apellido Materno">
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="npuesto" placeholder="Puesto" required>
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr>  
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="ncorreo" placeholder="Mail" required>
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr> 
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="npass" placeholder="password" required>
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="ncelular" placeholder="Tel. Celular">
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="ntelefono" placeholder="Tel. Oficina">
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                              <div class="col-lg-7">
+                                <input type="text" class="form-control" ng-model="nidTeamViewer" placeholder="No. TeamViewer">
+                              </div>   
+                            </div>                                           
+                        </td>
+                      </tr>                  
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="text-left">
+                              <div class="col-lg-10">
+                              Departamento:             
+                              </div>
+                            </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">
+                              <div class="col-lg-10">
+                                <select class="form-control" ng-model="d">
+                                    <option value="{{d.id_departamento}}" ng-repeat="d in departamentos" >{{d.depto}}
+                                    </option>
+                                </select>               
+                              </div>
+                            </div>                                          
+                        </td>
+                      </tr>                  
+                      <tr>
+                        <td class="ancho_input">
+                            <div class="form-group text-left">                    
+                                <button id="btn_guardar" type="submit" class="btn btn-primary">Guardar Usuario</button>
+                                <br><br>   
+                            </div>                                           
+                        </td>
+                      </tr>
+                    </table>                   
+                </form>            
+            </div>
+
+          </div>
+
+      </div>
+    </div>
+
+  </body>
+
+</html>
